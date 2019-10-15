@@ -51,12 +51,69 @@
         drawMap(cityLimits, neighborhoods, transitRoutes, urbanAreas);
       });
 
+      // function drawMap(cityLimitsData, neighborhoodsData, transitRoutesData, urbanAreasData) {
+      //   L.geoJson(cityLimitsData).addTo(map);
+      //   L.geoJson(neighborhoodsData).addTo(map);
+      //   L.geoJson(transitRoutesData).addTo(map);
+      //   L.geoJson(urbanAreasData).addTo(map);
+      // }
+
+      const urbanOptions = {
+        color: "#295b97",
+        weight: 0
+      };
+
+      const cityLimitsOptions = {
+        fillOpacity: 0,
+        color: "#040d18",
+        opacity: .8,
+        weight: 2.5
+      };
+
+      const neighborhoodOptions = {
+        fillOpacity: 0.3,
+        fillColor: "#e0ecf9",
+        color: "#151f2b",
+        weight: 1.7,
+        opacity: 1
+      };
+
+      // the transit data I found only designated two types of routes, labeled as '1'or '3'
+      // after looking through the data it looks like type '3' are rail routes
+      // and type '2' are bus routes
+      const railOptions = {
+        color: "#ff6e00",
+        weight: 2,
+        opacity: 1
+      };
+
+      const busOptions = {
+        color: "#f0f062",
+        weight: 0.1,
+        opacity: 1
+      };
+
       function drawMap(cityLimitsData, neighborhoodsData, transitRoutesData, urbanAreasData) {
-        L.geoJson(cityLimitsData).addTo(map);
-        L.geoJson(neighborhoodsData).addTo(map);
-        L.geoJson(transitRoutesData).addTo(map);
-        L.geoJson(urbanAreasData).addTo(map);
+        L.geoJSON(urbanAreasData, {
+          style: urbanOptions
+        }).addTo(map);
+        L.geoJSON(cityLimitsData, {
+          style: cityLimitsOptions
+        }).addTo(map);
+        L.geoJSON(neighborhoodsData, {
+          style: neighborhoodOptions
+        }).addTo(map);
+        L.geoJSON(transitRoutesData, {
+          style: function(feature) {
+            let type = feature.properties.route_type;
+            return type === "1"
+            ? railOptions
+            : busOptions;
+          }
+        }).addTo(map);
+        
       }
+
     </script>
   </body>
 </html>
