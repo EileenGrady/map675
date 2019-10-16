@@ -20,6 +20,13 @@
         padding: 0;
         background: rgba(0, 0, 0, 0.75);
       }
+
+      .tooltip {
+        color: white;
+        background: #295b97;
+        border: 0;
+        font-size: 1.3em;
+      }
     </style>
   </head>
 
@@ -101,7 +108,22 @@
           style: cityLimitsOptions
         }).addTo(map);
         L.geoJSON(neighborhoodsData, {
-          style: neighborhoodOptions
+          style: neighborhoodOptions,
+          onEachFeature: function(feature, layer) {
+            let tooltip = feature.properties.NAME;
+            layer.bindTooltip(tooltip, {
+              sticky: true,
+              className: "tooltip"
+            });
+            layer.on("mouseover", function(e) {
+              this.setStyle({
+                fillOpacity: 0.1
+              });
+            });
+            layer.on("mouseout", function(e) {
+              this.setStyle(neighborhoodOptions);
+            });
+          }
         }).addTo(map);
         L.geoJSON(transitRoutesData, {
           style: function(feature) {
@@ -113,6 +135,18 @@
         }).addTo(map);
         
       }
+
+      map.createPane("labels");
+      map.getPane("labels").style.zIndex = 649;
+      map.getPane("labels").style.pointerEvents = "none";
+
+      L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
+        {
+        attribution: "©OpenStreetMap, ©CartoDB",
+        pane: "labels"
+        }
+      ).addTo(map);
 
     </script>
   </body>
